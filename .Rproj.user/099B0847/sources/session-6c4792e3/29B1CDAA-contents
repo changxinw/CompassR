@@ -17,3 +17,10 @@ expr_list = expr_list[group_df$Sample]
 usethis::use_data(expr_list, overwrite = TRUE)
 
 genome_track_map(link_df, group_df, "Myh6", expr_list, assembly = "mm10", legend.position="left", t = -20, b = 20)
+
+
+package = c("Seurat", "Gviz", "GenomicRanges", "biomaRt", "dplyr", "ggplot2", "ggpubr", "ggdendro", 
+            "cowplot", "ggtree", "patchwork", "aplot", "RColorBrewer", "ggplotify")
+for (i in package){
+  usethis::use_package(i, type = "Imports")
+}
