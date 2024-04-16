@@ -1,32 +1,16 @@
-library(Seurat)
-library(Gviz)
-library(GenomicRanges)
-library(biomaRt)
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-library(ggpubr)
-library(ggdendro)
-library(cowplot)
-library(ggtree) # install with `devtools::install_github("YuLab-SMU/ggtree")` as you need a version newer than what bioconductor serves
-library(patchwork)
-library(aplot)
-library(ggplotify)
-library(RColorBrewer)
-
 #' functions to plot out the genome track
 #'
 #' @param df gene-cre linkage dataframe
 #' @param gene gene to plot
 #' @param assembly either mm10 or hg38
 #' @param sample_ids samples that want to plot
-#' @param min_x
-#' @param max_x
+#' @param min_x setting the minimum range
+#' @param max_x setting the maximum range
 #'
-#' @return
+#' @return list of plots for genome track
 #' @export
 #'
-#' @examples
+#' @examples NA
 plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_x = NULL){
   bm_host = "https://nov2020.archive.ensembl.org"
   if (assembly == "mm10"){
@@ -57,16 +41,16 @@ plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_
     )
   }
   df_gr = df %>%
-    pivot_wider(names_from = sample_id, values_from = zscore, id_cols = c('Chromosome', 'Start', 'End')) %>%
-    makeGRangesFromDataFrame(seqnames.field="Chromosome", start.field="Start", end.field="End", keep.extra.columns=TRUE, ignore.strand=TRUE)
+    pivot_wider(names_from = sample_id, values_from = zscore, id_cols = c('chromosome', 'start', 'end')) %>%
+    makeGRangesFromDataFrame(seqnames.field="chromosome", start.field="start", end.field="end", keep.extra.columns=TRUE, ignore.strand=TRUE)
   df_gr@elementMetadata = df_gr@elementMetadata[, sample_ids]
   genome(df_gr) = assembly
   chr <- as.character(unique(seqnames(df_gr)))
   colors = colorRampPalette(brewer.pal(n = 9, name = "Blues")[5:9])(100)
   cre_track = DataTrack(df_gr, name = "Link", type = "heatmap", showSampleNames = TRUE, cex.sampleNames = 0.6, col.sampleNames = "black", gradient = colors)#, groups = rep(c("male", "female"), each = 4)
   if (is.null(min_x) & is.null(max_x)) {
-    min_x = min(min(start(cre_track@range)), min(start(grtrack@range)))
-    max_x = max(max(end(cre_track@range)), max(end(grtrack@range)))
+    min_x = min(start(cre_track@range))#min(min(start(cre_track@range)), min(start(grtrack@range)))
+    max_x = max(end(cre_track@range))#max(max(end(cre_track@range)), max(end(grtrack@range)))
     xwidth = max_x - min_x
   } else {
     xwidth = 0
@@ -94,12 +78,12 @@ plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_
 #'
 #' @param df_group annotation dataframe with two columns: Sample and Group
 #' @param sample_order the vector indicate sample order of all samples
-#' @param ...
+#' @param ... parameters passed to ggplot2::theme
 #'
-#' @return
+#' @return ggplot2 object
 #' @export
 #'
-#' @examples
+#' @examples NA
 #'
 plot_annotation_bar = function(df_group, sample_order = df_group$Sample, ...){
   df_group$Sample = factor(df_group$Sample, levels = rev(sample_order))
@@ -119,27 +103,21 @@ plot_annotation_bar = function(df_group, sample_order = df_group$Sample, ...){
 }
 
 
-#' Function to plot out expression of gene as barplot
+
+#' Barplot of gene expression level
 #'
-#' @param sample_ids
-#' @param gene
-#' @param p_group
-#' @param sample_folder
+#' @param expr_df dataframe of gene expression
+#' @param p_group plot object of grouping bar
 #'
-#' @return
+#' @return ggplot2 object of gene expression level
 #' @export
 #'
-#' @examples
-plot_expr_barplot = function(expr_list, group_df, gene, p_group){
-  sample_ids = group_df$Sample
-  expr_vec = sapply(sample_ids, function(x){
-    expr_list[[x]][gene]
-  })
-  plot_df = data.frame(Gene = expr_vec, Sample = sample_ids)
-  plot_df$Sample = factor(plot_df$Sample, levels = rev(plot_df$Sample))
-  rownames(plot_df) = plot_df$Sample
-  p <- ggplot(data=plot_df, aes(x=Sample, y=Gene)) +
-    labs(y = gene) +
+#' @examples NA
+plot_expr_barplot = function(expr_df, p_group){
+  expr_df$Sample = factor(expr_df$Sample, levels = rev(expr_df$Sample))
+  rownames(expr_df) = expr_df$Sample
+  p <- ggplot(data=expr_df, aes(x=Sample, y=Gene)) +
+    labs(y = "Gene") +
     geom_bar(stat="identity") +
     scale_y_continuous(position = "right", expand = c(0,0)) +
     coord_flip() +
@@ -153,57 +131,48 @@ plot_expr_barplot = function(expr_list, group_df, gene, p_group){
   return(p)
 }
 
-#' Function to plot out expression of gene as boxplot
-#'
-#' @param expr_list_all
-#' @param sample_ids
-#' @param gene
-#' @param p_group
-#'
-#' @return
-#' @export
-#'
-#' @examples
-plot_expr_boxplot = function(expr_list_all, group_df, gene, p_group){
-  sample_ids = group_df$Sample
-  expr_list = lapply(sample_ids, function(x){
-    expr_df = data.frame(expr_list_all[[x]][gene, ])
-    expr_df$Sample = x
-    colnames(expr_df) = c("Gene", "Sample")
-    return(expr_df)
-  })
-  plot_df = do.call("rbind", expr_list)
-  plot_df$Sample = factor(plot_df$Sample, levels = rev(sample_ids))
-  p <- ggplot(data=plot_df, aes(x=Sample, y=Gene)) +
-    labs(y = gene) +
-    # geom_bar(stat="identity") +
-    geom_boxplot(fill='#A4A4A4') +
-    scale_y_continuous(position = "right", expand = c(0,0)) +
-    coord_flip() +
-    ylim2(p_group) +
-    theme(
-      panel.background = element_rect(fill='transparent'),
-      plot.background = element_rect(fill='transparent', color=NA),
-      axis.text.y=element_blank(),
-      axis.title.y=element_blank()
-    )
-  return(p)
-}
 
-#' Title
+
+#' plot_expr_boxplot = function(expr_list_all, group_df, gene, p_group){
+#'   sample_ids = group_df$Sample
+#'   expr_list = lapply(sample_ids, function(x){
+#'     expr_df = data.frame(expr_list_all[[x]][gene, ])
+#'     expr_df$Sample = x
+#'     colnames(expr_df) = c("Gene", "Sample")
+#'     return(expr_df)
+#'   })
+#'   plot_df = do.call("rbind", expr_list)
+#'   plot_df$Sample = factor(plot_df$Sample, levels = rev(sample_ids))
+#'   p <- ggplot(data=plot_df, aes(x=Sample, y=Gene)) +
+#'     labs(y = gene) +
+#'     # geom_bar(stat="identity") +
+#'     geom_boxplot(fill='#A4A4A4') +
+#'     scale_y_continuous(position = "right", expand = c(0,0)) +
+#'     coord_flip() +
+#'     ylim2(p_group) +
+#'     theme(
+#'       panel.background = element_rect(fill='transparent'),
+#'       plot.background = element_rect(fill='transparent', color=NA),
+#'       axis.text.y=element_blank(),
+#'       axis.title.y=element_blank()
+#'     )
+#'   return(p)
+#' }
+
+#' Merge all plots together a large plot
 #'
-#' @param track_plot
-#' @param annot_plot
-#' @param expr_plot
-#' @param track_width
-#' @param legend.position
-#' @param t
-#' @param b
+#' @param track_plot plot object of genome tracks
+#' @param annot_plot annotation bar for expression
+#' @param expr_plot gene expression barplot
+#' @param track_width width of tracks
+#' @param legend.position legend position, by default will be bottom
+#' @param t for alignment of expression barplot, distance to top
+#' @param b for alignment of expression barplot, distance to bottom
 #'
-#' @return
+#' @return plot object of combined plot
 #' @export
 #'
-#' @examples
+#' @examples NA
 combind_plots = function(track_plot, annot_plot, expr_plot, track_width, legend.position="bottom", t = -20, b = 20){
   group_legend = plot_grid(get_legend(annot_plot + theme(legend.position = legend.position)))
   annot_expr = annot_plot +
@@ -221,31 +190,30 @@ combind_plots = function(track_plot, annot_plot, expr_plot, track_width, legend.
   return(p)
 }
 
-#' Function to make the genome track plot
+#' Function to make the genome track map with combined expression and group information
 #'
-#' @param link_df
-#' @param group_df
-#' @param gene
-#' @param expr_list
-#' @param output_file
-#' @param assembly
-#' @param plot_type
-#' @param width
-#' @param height
-#' @param ... additional parameters passed to plots combination
+#' @param link_df data of linkage data frame
+#' @param group_df data frame of group information
+#' @param gene gene to plot
+#' @param expr_list list of gene expression information
+#' @param output_file output plot file name
+#' @param assembly hg38 or mm10
+#' @param width plot width
+#' @param height plot height
+#' @param ... additional parameters passed to plots combind_plots
 #'
-#' @return
+#' @return plot object
 #' @export
 #'
-#' @examples
-genome_track_map = function(link_df, group_df, gene, expr_list, output_file = "./test.pdf", assembly = "hg38", plot_type = "barplot", width = 12, height = 6, ...){
+#' @examples NA
+genome_track_map = function(link_df, group_df, gene, expr_df, output_file = "./test.pdf", assembly = "hg38", width = 12, height = 6, ...){
   group_df = group_df[order(group_df$Group), ]
-  link_gene_df = link_df[link_df$gene == gene & link_df$sample_id %in% group_df$Sample, ]
+  link_gene_df = link_df[link_df$gene == gene & link_df$sample %in% group_df$Sample, ]
   ### prepare dataframe
   if (length(unique(link_gene_df$sample_id))<=2){ return(NULL) }
   ### plot
   annot_plot = plot_annotation_bar(group_df)
-  expr_plot = plot_expr_barplot(expr_list, group_df, gene, annot_plot)
+  expr_plot = plot_expr_barplot(expr_df, annot_plot)
   track_plot = plot_genome_track(link_gene_df, gene, assembly, group_df$Sample)
   p_track = ggplotify::as.ggplot(~Gviz::plotTracks(track_plot[[1]], from = track_plot[[3]], to = track_plot[[4]]), envir=environment())
   pdf(output_file, width = width, height = height)
