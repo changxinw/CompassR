@@ -14,10 +14,10 @@
 plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_x = NULL){
   bm_host = "https://nov2020.archive.ensembl.org"
   if (assembly == "mm10"){
-    bm <- useEnsembl(host = bm_host,
+    bm <- biomaRt::useEnsembl(host = bm_host,
                      biomart = "ENSEMBL_MART_ENSEMBL",
                      dataset = "mmusculus_gene_ensembl") #hsapiens_gene_ensembl
-    grtrack <- BiomartGeneRegionTrack(genome = "mm10",
+    grtrack <- Gviz::BiomartGeneRegionTrack(genome = "mm10",
                                       name = "Gene",
                                       symbol = gene,
                                       biomart = bm,
@@ -27,10 +27,10 @@ plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_
                                       # stacking = "hide"
     )
   } else if (assembly == "hg38"){
-    bm <- useEnsembl(host = bm_host,
+    bm <- biomaRt::useEnsembl(host = bm_host,
                      biomart = "ENSEMBL_MART_ENSEMBL",
                      dataset = "hsapiens_gene_ensembl") #hsapiens_gene_ensembl
-    grtrack <- BiomartGeneRegionTrack(genome = "hg38",
+    grtrack <- Gviz::BiomartGeneRegionTrack(genome = "hg38",
                                       name = "Gene",
                                       symbol = gene,
                                       biomart = bm,
@@ -47,7 +47,10 @@ plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_
   genome(df_gr) = assembly
   chr <- as.character(unique(seqnames(df_gr)))
   colors = colorRampPalette(brewer.pal(n = 9, name = "Blues")[5:9])(100)
-  cre_track = DataTrack(df_gr, name = "Link", type = "heatmap", showSampleNames = TRUE, cex.sampleNames = 0.6, col.sampleNames = "black", gradient = colors)#, groups = rep(c("male", "female"), each = 4)
+  cre_track = DataTrack(df_gr, name = "Link",
+                        type = "heatmap", showSampleNames = TRUE,
+                        cex.sampleNames = 0.6, col.sampleNames = "black",
+                        gradient = colors)#, groups = rep(c("male", "female"), each = 4)
   if (is.null(min_x) & is.null(max_x)) {
     min_x = min(start(cre_track@range))#min(min(start(cre_track@range)), min(start(grtrack@range)))
     max_x = max(end(cre_track@range))#max(max(end(cre_track@range)), max(end(grtrack@range)))
@@ -108,20 +111,21 @@ plot_annotation_bar = function(df_group, sample_order = df_group$Sample, ...){
 #'
 #' @param expr_df dataframe of gene expression
 #' @param p_group plot object of grouping bar
+#' @param gene expressed gene to plot
 #'
 #' @return ggplot2 object of gene expression level
 #' @export
 #'
 #' @examples NA
-plot_expr_barplot = function(expr_df, p_group){
+plot_expr_barplot = function(expr_df, p_group, gene = "Gene"){
   expr_df$Sample = factor(expr_df$Sample, levels = rev(expr_df$Sample))
   rownames(expr_df) = expr_df$Sample
   p <- ggplot(data=expr_df, aes(x=Sample, y=Gene)) +
-    labs(y = "Gene") +
+    labs(y = gene) +
     geom_bar(stat="identity") +
     scale_y_continuous(position = "right", expand = c(0,0)) +
     coord_flip() +
-    ylim2(p_group) +
+    aplot::ylim2(p_group) +
     theme(
       panel.background = element_rect(fill='transparent'),
       plot.background = element_rect(fill='transparent', color=NA),
@@ -213,7 +217,7 @@ genome_track_map = function(link_df, group_df, gene, expr_df, output_file = "./t
   if (length(unique(link_gene_df$sample_id))<=2){ return(NULL) }
   ### plot
   annot_plot = plot_annotation_bar(group_df)
-  expr_plot = plot_expr_barplot(expr_df, annot_plot)
+  expr_plot = plot_expr_barplot(expr_df, annot_plot, gene)
   track_plot = plot_genome_track(link_gene_df, gene, assembly, group_df$Sample)
   p_track = ggplotify::as.ggplot(~Gviz::plotTracks(track_plot[[1]], from = track_plot[[3]], to = track_plot[[4]]), envir=environment())
   pdf(output_file, width = width, height = height)

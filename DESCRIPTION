@@ -26,5 +26,10 @@ Imports:
     RColorBrewer,
     Seurat,
     jsonlite,
-    httr
+    httr,
+    aplot
 RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
