@@ -1,5 +1,9 @@
 .Rbuildignore
 .Rproj.user
 .RData
+.Rhistory
+.DS_Store
 scomicsdb.Rproj
 inst/doc
+*/.DS_Store
+
