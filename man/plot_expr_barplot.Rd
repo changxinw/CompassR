@@ -4,12 +4,14 @@
 \alias{plot_expr_barplot}
 \title{Barplot of gene expression level}
 \usage{
-plot_expr_barplot(expr_df, p_group)
+plot_expr_barplot(expr_df, p_group, gene = "Gene")
 }
 \arguments{
 \item{expr_df}{dataframe of gene expression}
 
 \item{p_group}{plot object of grouping bar}
+
+\item{gene}{expressed gene to plot}
 }
 \value{
 ggplot2 object of gene expression level

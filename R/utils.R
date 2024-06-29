@@ -1,8 +1,27 @@
 
+#' check if a gene is valid
+#'
+#' @param assembly hg38 or mm10
+#' @param gene gene symbol
+#'
+#' @return whether the gene is valid
+#' @export
+#'
+#' @examples NA
 check_gene = function(assembly, gene){
   return(TRUE)
 }
 
+#'  Plot motif or tf binding information
+#'
+#' @param motif_df data frame of motif or tf binding information
+#' @param top_n top n sets to be showed
+#' @param title title of the plot
+#'
+#' @return ggplot2 object of motif plot
+#' @export
+#'
+#' @examples NA
 plot_giggle = function(motif_df, top_n = 15, title = ""){
   motif_df = motif_df[order(-motif_df$combo_score), ]
   motif_df$Factor = factor(motif_df$Factor, levels = rev(motif_df$Factor))
@@ -14,6 +33,16 @@ plot_giggle = function(motif_df, top_n = 15, title = ""){
   return(p)
 }
 
+#' separate peaks based on their CRE-gene linkages on diferent groups
+#'
+#' @param link_gene_df CRE-gene link data frame
+#' @param peaks coordinate of peaks
+#' @param df_group group information of each sample
+#'
+#' @return data frame of the peak proportion in different groups
+#' @export
+#'
+#' @examples NA
 make_peak_group = function(link_gene_df, peaks, df_group){
   link_gr = makeGRangesFromDataFrame(link_gene_df, seqnames.field="Chromosome", start.field="Start", end.field="End", strand.field="strand", keep.extra.columns=TRUE, ignore.strand=FALSE)
   link_gr$reduced_peak = NA
