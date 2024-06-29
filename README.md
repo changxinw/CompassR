@@ -5,7 +5,7 @@ We developed CompassR to support more in-depth analyses and visualizations of CR
 
 ## Installation
 
-To install the latest release of Signac from CRAN:
+To install the latest release of CompassR from GitHub:
 
 ``` r
 if (!requireNamespace("remotes", quietly = TRUE))
