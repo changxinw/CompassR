@@ -1,6 +1,6 @@
-Package: scomicsdb
+Package: CompassR
 Type: Package
-Title: scomicsdb
+Title: CompassR
 Version: 0.1.0
 Author: Changxin Wan
 Maintainer: Changxin Wan <changxin.wan@duke.edu>

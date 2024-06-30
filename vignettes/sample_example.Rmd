@@ -42,12 +42,12 @@ library(Signac)
 
 ```{r}
 ### Sample level analysis
-output = "/Users/changxinwan/Desktop/Projects/OmicsDB/"
+output = "./"
 options(timeout=600)
-obj = readRDS(url("http://scomicsdb.com/static/seurat_object/all/GSM5065524_GSM5065525.rds", "rb"))
-download.file("http://scomicsdb.com/static/fragments/all/GSM5065524_GSM5065525_atac_fragments.tsv.gz",
+obj = readRDS(url("http://compass-db.com/static/seurat_object/all/GSM5065524_GSM5065525.rds", "rb"))
+download.file("http://compass-db.com/static/fragments/all/GSM5065524_GSM5065525_atac_fragments.tsv.gz",
               paste0(output, "GSM5065524_GSM5065525_atac_fragments.tsv.gz"))
-download.file("http://scomicsdb.com/static/fragments/all/GSM5065524_GSM5065525_atac_fragments.tsv.gz.tbi",
+download.file("http://compass-db.com/static/fragments/all/GSM5065524_GSM5065525_atac_fragments.tsv.gz.tbi",
               paste0(output, "GSM5065524_GSM5065525_atac_fragments.tsv.gz.tbi"))
 
 ```
