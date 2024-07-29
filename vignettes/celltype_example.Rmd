@@ -86,7 +86,7 @@ peaks = track_plot[[length(track_plot)]]
 peaks$name = as.character(peaks$name)
 peak_order = make_peak_group(link_df, peaks, sample_df)
 
-ht_peak_order = peak_order[peak_order[, 2] >=0.5 & peak_order[, 1]<0.5, ]
+ht_peak_order = peak_order[peak_order[, 1] >= 0.5 & peak_order[, 2]<0.5, ]
 ht_peaks = rownames(ht_peak_order)
 
 peak_vec = sub(":", "-", as.character(peaks))
