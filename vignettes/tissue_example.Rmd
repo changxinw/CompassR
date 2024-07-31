@@ -38,7 +38,11 @@ library(aplot)
 library(ggplotify)
 library(RColorBrewer)
 
+### quick run example
+CompassR:::quick_example_compassr("Myh6")
+```
 
+```{r}
 ## Example for Myh6 in mouse heart sample
 expr_vec = query_exprssion("mm10", "Myh6")
 link_res = query_linkage("mm10", "Myh6")
@@ -52,9 +56,7 @@ colnames(sample_df) = c("Sample", "Group")
 sample_df = sample_df[order(sample_df$Group), ]
 
 link_df = link_df[link_df$sample %in% sample_df$Sample, ]
-```
 
-```{r}
 expr_df = data.frame(t(expr_vec)[sample_df$Sample, ])
 colnames(expr_df) = c("Gene")
 expr_df$Sample = rownames(expr_df)

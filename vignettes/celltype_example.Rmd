@@ -37,6 +37,9 @@ library(patchwork)
 library(aplot)
 library(ggplotify)
 library(RColorBrewer)
+
+### quick run example
+CompassR:::quick_example_compassr("HEY2")
 ```
 
 ```{r}
@@ -103,6 +106,7 @@ library(ggwordcloud)
 p = ggplot(tf[1:50, ], aes(label = Factor, size = combo_score)) +
   geom_text_wordcloud() +
   theme_minimal()
+p
 ggsave("Wordcloud_HEY2_Ventricle_specific_TFs.pdf", p, width = 6, height = 5)
 
 ```

@@ -38,6 +38,9 @@ library(aplot)
 library(ggplotify)
 library(RColorBrewer)
 library(Signac)
+
+### quick run example
+CompassR:::quick_example_compassr("CD79B")
 ```
 
 ```{r}
@@ -70,5 +73,16 @@ p = CoveragePlot(
   extend.downstream = 10000
 )
 # ggsave("CoveragePlot_CD79B_sample_eg.pdf", p, width = 6, height = 8)
+```
+
+```{r}
+link_df_obj = Links(obj)
+gene_link = link_df_obj[link_df_obj$gene == "CD79B"]
+
+peak_vec = sub(":", "-", gene_link$peak)
+peak_vec
+
+tf = tf_binding("hg38", paste0(peak_vec, collapse = "_"))
+p = plot_giggle(tf)
 ```
 
