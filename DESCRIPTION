@@ -31,6 +31,7 @@ Suggests:
     Seurat,
     ggdendro,
     ggpubr,
-    ggtree
+    ggtree,
+    ggwordcloud
 VignetteBuilder: knitr
 URL: https://changxinw.github.io/CompassR/
