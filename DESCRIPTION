@@ -33,3 +33,4 @@ Suggests:
     ggpubr,
     ggtree
 VignetteBuilder: knitr
+URL: https://changxinw.github.io/CompassR/
