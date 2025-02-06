@@ -29,6 +29,7 @@ Suggests:
     knitr,
     rmarkdown,
     Seurat,
+    Signac,
     ggdendro,
     ggpubr,
     ggtree,
