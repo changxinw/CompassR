@@ -4,7 +4,15 @@
 \alias{plot_genome_track}
 \title{functions to plot out the genome track}
 \usage{
-plot_genome_track(df, gene, assembly, sample_ids, min_x = NULL, max_x = NULL)
+plot_genome_track(
+  df,
+  gene,
+  assembly,
+  sample_ids,
+  min_x = NULL,
+  max_x = NULL,
+  bm_host = "https://nov2020.archive.ensembl.org"
+)
 }
 \arguments{
 \item{df}{gene-cre linkage dataframe}
@@ -18,6 +26,8 @@ plot_genome_track(df, gene, assembly, sample_ids, min_x = NULL, max_x = NULL)
 \item{min_x}{setting the minimum range}
 
 \item{max_x}{setting the maximum range}
+
+\item{bm_host}{biomart host site}
 }
 \value{
 list of plots for genome track

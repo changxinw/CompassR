@@ -1,0 +1,86 @@
+---
+title: "integrat_inhouse_data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{integrat_inhouse_data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(CompassR)
+```
+
+
+```{r}
+gene = "EMP2"
+tissue = "Pancreas"
+
+lexpr_df = read.csv("http://compass-db.com/static/test_data/lung_expr_df.csv", header = TRUE, row.names = 1)
+llink_df = read.csv("http://compass-db.com/static/test_data/lung_linkage_bed.csv", header = TRUE, row.names = 1)
+```
+
+```{r}
+expr_vec = query_exprssion("hg38", gene)
+link_res = query_linkage("hg38", gene)
+
+link_df = link_res[["linkage"]]
+sample_df = link_res[["samples"]]
+
+sample_df = sample_df[sample_df$bio_source == tissue, ]
+sample_df = sample_df[, c("sample_id", "bio_source")]
+colnames(sample_df) = c("Sample", "Group")
+sample_df = sample_df[order(sample_df$Group), ]
+link_df = link_df[link_df$sample %in% sample_df$Sample, 1:(ncol(link_df)-5)]
+expr_df = data.frame(t(expr_vec)[sample_df$Sample, ])
+colnames(expr_df) = c("Gene")
+expr_df$Sample = rownames(expr_df)
+```
+
+
+```{r}
+colnames(llink_df) = colnames(link_df)
+link_df = rbind(link_df, llink_df)
+link_df = link_df[link_df$gene == gene, ]
+
+sample_df = rbind(sample_df, data.frame(Sample = colnames(lexpr_df), Group = "Lung", row.names = colnames(lexpr_df)))
+expr_df = rbind(expr_df, data.frame(Gene = unlist(lexpr_df[gene, ]), Sample = colnames(lexpr_df), row.names =  colnames(lexpr_df)))
+```
+
+
+
+```{r}
+link_df$sample_id = link_df$sample
+genome_track_map(link_df, sample_df, gene, expr_df, assembly = "hg38", legend.position="left", t = -20, b = 20)
+```
+
+```{r}
+track_plot = plot_genome_track(link_df, gene, "hg38", sample_df$Sample)
+peaks = track_plot[[length(track_plot)]]
+peaks$name = as.character(peaks$name)
+peak_order = make_peak_group(link_df, peaks, sample_df)
+
+ht_peak_order = peak_order[peak_order[, 1] >0.5 & peak_order[, 2]<0.5, ]
+print(dim(ht_peak_order))
+ht_peaks = rownames(ht_peak_order)
+
+peak_vec = sub(":", "-", as.character(peaks))
+ht_peaks = peak_vec[as.numeric(ht_peaks)]
+
+
+tf = tf_binding("hg38", paste0(ht_peaks, collapse = "_"))
+p = plot_giggle(tf)
+p
+```
+
+
+
+
+

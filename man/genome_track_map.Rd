@@ -23,6 +23,8 @@ genome_track_map(
 
 \item{gene}{gene to plot}
 
+\item{expr_df}{list of gene expression information}
+
 \item{output_file}{output plot file name}
 
 \item{assembly}{hg38 or mm10}
@@ -32,8 +34,6 @@ genome_track_map(
 \item{height}{plot height}
 
 \item{...}{additional parameters passed to plots combind_plots}
-
-\item{expr_list}{list of gene expression information}
 }
 \value{
 plot object

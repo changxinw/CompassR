@@ -16,28 +16,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(CompassR)
-library(httr)
-library(jsonlite)
-library(ggplot2)
-library(cowplot)
-library(ggforce)
-library(dplyr)
-library(Seurat)
-library(Gviz)
-library(GenomicRanges)
-library(biomaRt)
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-library(ggpubr)
-library(ggdendro)
-library(cowplot)
-library(ggtree) # install with `devtools::install_github("YuLab-SMU/ggtree")` as you need a version newer than what bioconductor serves
-library(patchwork)
-library(aplot)
-library(ggplotify)
-library(RColorBrewer)
-
 
 ## Example for Myh6 in mouse heart sample
 expr_vec = query_exprssion("mm10", "Myh6")

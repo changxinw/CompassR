@@ -16,55 +16,30 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(CompassR)
-library(httr)
-library(jsonlite)
-library(ggplot2)
-library(cowplot)
-library(ggforce)
-library(dplyr)
 library(Seurat)
-library(Gviz)
-library(GenomicRanges)
-library(biomaRt)
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-library(ggpubr)
-library(ggdendro)
-library(cowplot)
-library(ggtree) # install with `devtools::install_github("YuLab-SMU/ggtree")` as you need a version newer than what bioconductor serves
-library(patchwork)
-library(aplot)
-library(ggplotify)
-library(RColorBrewer)
 library(Signac)
+```
 
+```{r}
 ### quick run example
-CompassR:::quick_example_compassr("CD79B")
+# CompassR:::quick_example_compassr("CD79B")
 ```
 
 ```{r}
 ### Sample level analysis
-output = "./"
 options(timeout=600)
-obj = readRDS(url("http://compass-db.com/static/seurat_object/all/GSM5065524_GSM5065525.rds", "rb"))
-download.file("http://compass-db.com/static/fragments/all/GSM5065524_GSM5065525_atac_fragments.tsv.gz",
-              paste0(output, "GSM5065524_GSM5065525_atac_fragments.tsv.gz"))
-download.file("http://compass-db.com/static/fragments/all/GSM5065524_GSM5065525_atac_fragments.tsv.gz.tbi",
-              paste0(output, "GSM5065524_GSM5065525_atac_fragments.tsv.gz.tbi"))
-
+obj = readRDS(url("https://g-297ec7.1d0d8d.03c0.data.globus.org/seurat_object/GSM5065525_GSM5065524.rds", "rb"))
+DefaultAssay(obj) = "ATAC"
+frag = Fragments(obj)[[1]]
+frag = UpdatePath(frag, new.path = "https://g-297ec7.1d0d8d.03c0.data.globus.org/fragments/GSM5065525_GSM5065524.tsv.gz", verbose = TRUE)
+obj@assays$ATAC@fragments[[1]] = frag
 ```
 
 ```{r}
-DefaultAssay(obj) = "ATAC"
-frag = Fragments(obj)[[1]]
-frag = UpdatePath(frag, new.path = paste0(output, "GSM5065524_GSM5065525_atac_fragments.tsv.gz"), verbose = TRUE)
-obj@assays$ATAC@fragments[[1]] = frag
-
 gene = "CD79B"
 p = CoveragePlot(
   object = obj,
-  group.by = "annot",
+  group.by = "annot.primary",
   region = gene,
   features = gene,
   annotation = TRUE,
@@ -72,7 +47,7 @@ p = CoveragePlot(
   extend.upstream = 10000,
   extend.downstream = 10000
 )
-# ggsave("CoveragePlot_CD79B_sample_eg.pdf", p, width = 6, height = 8)
+print(p)
 ```
 
 ```{r}
@@ -84,5 +59,5 @@ peak_vec
 
 tf = tf_binding("hg38", paste0(peak_vec, collapse = "_"))
 p = plot_giggle(tf)
+print(p)
 ```
-

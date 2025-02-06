@@ -4,9 +4,11 @@
 #'
 #' @return data frame of sample information
 #' @export
+#' @importFrom httr GET
+#' @importFrom jsonlite fromJSON
 #'
 #' @examples NA
-query_meta = function(api = "http://scomicsdb.com/metaapi/"){
+query_meta = function(api = "http://compass-db.com/metaapi/"){
   res = GET(api)
   data = fromJSON(rawToChar(res$content))
   sample_df = as.data.frame(data)
@@ -26,7 +28,7 @@ query_meta = function(api = "http://scomicsdb.com/metaapi/"){
 #'
 #' @examples NA
 query_linkage = function(assembly, gene="", coord="", celltype = FALSE){
-  api = "http://scomicsdb.com/linkapi/"
+  api = "http://compass-db.com/linkapi/"
   # check gene name
   if (assembly != "hg38" & assembly != "mm10"){
     print("Assembly must choose between hg38 and mm10!")
@@ -46,7 +48,9 @@ query_linkage = function(assembly, gene="", coord="", celltype = FALSE){
   sample_info = query_meta()
   res_list = list()
   res_list[["linkage"]] = link_df
-  res_list[["samples"]] = sample_info[unique(link_df$sample), ]
+  sample_df = sample_info[unique(link_df$sample), ]
+  sample_df = sample_df[!is.na(sample_df$sample_id), ]
+  res_list[["samples"]] = sample_df
   return(res_list)
 }
 
@@ -62,7 +66,7 @@ query_linkage = function(assembly, gene="", coord="", celltype = FALSE){
 #'
 #' @examples NA
 query_exprssion = function(assembly, gene, celltype = FALSE){
-  api = "http://scomicsdb.com/exprapi/"
+  api = "http://compass-db.com/exprapi/"
   # check gene name
   if (assembly != "hg38" & assembly != "mm10"){
     print("Assembly must choose between hg38 and mm10!")
@@ -93,7 +97,7 @@ query_exprssion = function(assembly, gene, celltype = FALSE){
 #'
 #' @examples NA
 tf_binding = function(assembly, coords){
-  api = "http://scomicsdb.com/tfbsapi/"
+  api = "http://compass-db.com/tfbsapi/"
   # check gene name
   if (assembly != "hg38" & assembly != "mm10"){
     print("Assembly must choose between hg38 and mm10!")

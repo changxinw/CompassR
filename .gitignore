@@ -1,10 +1,11 @@
 .Rbuildignore
 .Rproj.user
-.RData
+.RData*
 .Rhistory
 .DS_Store
-scomicsdb.Rproj
+*.Rproj
 inst/doc
 */.DS_Store
-
+*.rds
+*.pdf
 /Meta/

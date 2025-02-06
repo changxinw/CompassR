@@ -6,18 +6,29 @@
 #' @param sample_ids samples that want to plot
 #' @param min_x setting the minimum range
 #' @param max_x setting the maximum range
+#' @param bm_host biomart host site
 #'
 #' @return list of plots for genome track
+#' @importFrom biomaRt useEnsembl
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom grDevices colorRampPalette
+#' @import Gviz
+#' @import GenomicRanges
 #' @export
 #'
 #' @examples NA
-plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_x = NULL){
-  bm_host = "https://nov2020.archive.ensembl.org"
+plot_genome_track <- function(df,
+                              gene,
+                              assembly,
+                              sample_ids,
+                              min_x = NULL,
+                              max_x = NULL,
+                              bm_host = "https://nov2020.archive.ensembl.org"){
   if (assembly == "mm10"){
-    bm <- biomaRt::useEnsembl(host = bm_host,
+    bm <- useEnsembl(host = bm_host,
                      biomart = "ENSEMBL_MART_ENSEMBL",
                      dataset = "mmusculus_gene_ensembl") #hsapiens_gene_ensembl
-    grtrack <- Gviz::BiomartGeneRegionTrack(genome = "mm10",
+    grtrack <- BiomartGeneRegionTrack(genome = "mm10",
                                       name = "Gene",
                                       symbol = gene,
                                       biomart = bm,
@@ -27,10 +38,10 @@ plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_
                                       # stacking = "hide"
     )
   } else if (assembly == "hg38"){
-    bm <- biomaRt::useEnsembl(host = bm_host,
+    bm <- useEnsembl(host = bm_host,
                      biomart = "ENSEMBL_MART_ENSEMBL",
                      dataset = "hsapiens_gene_ensembl") #hsapiens_gene_ensembl
-    grtrack <- Gviz::BiomartGeneRegionTrack(genome = "hg38",
+    grtrack <- BiomartGeneRegionTrack(genome = "hg38",
                                       name = "Gene",
                                       symbol = gene,
                                       biomart = bm,
@@ -61,14 +72,14 @@ plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_
   itrack <- IdeogramTrack(genome = assembly, chromosome = chr)
   gtrack <- GenomeAxisTrack()
   ### add additional track as peaks panel, should combine individual peaks first
-  peak_gr = GenomicRanges::reduce(df_gr, min.gapwidth=1L)
+  peak_gr = reduce(df_gr, min.gapwidth=1L)
   peak_gr$name = 1:length(peak_gr)
   peak_track = AnnotationTrack(peak_gr, id = peak_gr$name, name = "Peak", showFeatureId=TRUE, stacking = "squish", fontcolor.item="black", cex.feature = 0.5)
   # stacking(peak_track) <- "full"
   # p_peak = as.ggplot(~Gviz::plotTracks(peak_track, from = min_x - 0.05*xwidth, to = max_x + 0.05*xwidth, stacking = "dense"))
   ### get plot result
   track_list = list(itrack, gtrack, cre_track, peak_track, grtrack)
-  all_tracks = Gviz::plotTracks(track_list, from = min_x - 0.05*xwidth, to = max_x + 0.05*xwidth)
+  all_tracks = plotTracks(track_list, from = min_x - 0.05*xwidth, to = max_x + 0.05*xwidth)
   # gviz_obj = ~Gviz::plotTracks(track_list, from = min_x - 0.05*xwidth, to = max_x + 0.05*xwidth)
   # p_all = as.ggplot(~Gviz::plotTracks(track_list, from = min_x - 0.05*xwidth, to = max_x + 0.05*xwidth))
   graph_width = as.data.frame(all_tracks$titles@coords)
@@ -85,6 +96,8 @@ plot_genome_track <- function(df, gene, assembly, sample_ids, min_x = NULL, max_
 #'
 #' @return ggplot2 object
 #' @export
+#' @import ggplot2
+#' @importFrom cowplot theme_nothing
 #'
 #' @examples NA
 #'
@@ -115,6 +128,7 @@ plot_annotation_bar = function(df_group, sample_order = df_group$Sample, ...){
 #'
 #' @return ggplot2 object of gene expression level
 #' @export
+#' @importFrom aplot ylim2
 #'
 #' @examples NA
 plot_expr_barplot = function(expr_df, p_group, gene = "Gene"){
@@ -122,10 +136,11 @@ plot_expr_barplot = function(expr_df, p_group, gene = "Gene"){
   rownames(expr_df) = expr_df$Sample
   p <- ggplot(data=expr_df, aes(x=Sample, y=Gene)) +
     labs(y = gene) +
-    geom_bar(stat="identity") +
+    geom_bar(stat="identity", fill = "#E64B35FF", color = "black") +
     scale_y_continuous(position = "right", expand = c(0,0)) +
     coord_flip() +
-    aplot::ylim2(p_group) +
+    ylim2(p_group) +
+    theme_classic() +
     theme(
       panel.background = element_rect(fill='transparent'),
       plot.background = element_rect(fill='transparent', color=NA),
@@ -175,9 +190,17 @@ plot_expr_barplot = function(expr_df, p_group, gene = "Gene"){
 #'
 #' @return plot object of combined plot
 #' @export
+#' @importFrom cowplot plot_grid get_legend
+#' @importFrom patchwork plot_layout
 #'
 #' @examples NA
-combind_plots = function(track_plot, annot_plot, expr_plot, track_width, legend.position="bottom", t = -20, b = 20){
+combind_plots = function(track_plot,
+                         annot_plot,
+                         expr_plot,
+                         track_width,
+                         legend.position="bottom",
+                         t = -20,
+                         b = 20){
   group_legend = plot_grid(get_legend(annot_plot + theme(legend.position = legend.position)))
   annot_expr = annot_plot +
     expr_plot +
@@ -190,7 +213,8 @@ combind_plots = function(track_plot, annot_plot, expr_plot, track_width, legend.
       13
       13
     "
-  p = track_plot + annot_expr + group_legend + plot_layout(design = design, heights = track_width$width, widths = c(50, 20))
+  p = track_plot + annot_expr + group_legend +
+    plot_layout(design = design, heights = track_width$width, widths = c(50, 20))
   return(p)
 }
 
@@ -199,7 +223,7 @@ combind_plots = function(track_plot, annot_plot, expr_plot, track_width, legend.
 #' @param link_df data of linkage data frame
 #' @param group_df data frame of group information
 #' @param gene gene to plot
-#' @param expr_list list of gene expression information
+#' @param expr_df list of gene expression information
 #' @param output_file output plot file name
 #' @param assembly hg38 or mm10
 #' @param width plot width
@@ -208,9 +232,19 @@ combind_plots = function(track_plot, annot_plot, expr_plot, track_width, legend.
 #'
 #' @return plot object
 #' @export
+#' @importFrom ggplotify as.ggplot
+#' @importFrom grDevices pdf dev.off
 #'
 #' @examples NA
-genome_track_map = function(link_df, group_df, gene, expr_df, output_file = "./test.pdf", assembly = "hg38", width = 12, height = 6, ...){
+genome_track_map = function(link_df,
+                            group_df,
+                            gene,
+                            expr_df,
+                            output_file = "./test.pdf",
+                            assembly = "hg38",
+                            width = 12,
+                            height = 6,
+                            ...){
   group_df = group_df[order(group_df$Group), ]
   link_gene_df = link_df[link_df$gene == gene & link_df$sample %in% group_df$Sample, ]
   ### prepare dataframe
@@ -219,7 +253,7 @@ genome_track_map = function(link_df, group_df, gene, expr_df, output_file = "./t
   annot_plot = plot_annotation_bar(group_df)
   expr_plot = plot_expr_barplot(expr_df, annot_plot, gene)
   track_plot = plot_genome_track(link_gene_df, gene, assembly, group_df$Sample)
-  p_track = ggplotify::as.ggplot(~Gviz::plotTracks(track_plot[[1]], from = track_plot[[3]], to = track_plot[[4]]), envir=environment())
+  p_track = as.ggplot(~Gviz::plotTracks(track_plot[[1]], from = track_plot[[3]], to = track_plot[[4]]), envir=environment())
   pdf(output_file, width = width, height = height)
   p = combind_plots(p_track, annot_plot, expr_plot, track_plot[[2]], ...)
   print(p)

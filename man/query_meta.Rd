@@ -4,7 +4,7 @@
 \alias{query_meta}
 \title{query metadata of samples}
 \usage{
-query_meta(api = "http://scomicsdb.com/metaapi/")
+query_meta(api = "http://compass-db.com/metaapi/")
 }
 \arguments{
 \item{api}{website api}

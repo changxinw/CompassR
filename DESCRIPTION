@@ -4,7 +4,7 @@ Title: CompassR
 Version: 0.1.0
 Author: Changxin Wan
 Maintainer: Changxin Wan <changxin.wan@duke.edu>
-Description: Single-cell Multi-omics data portal visualization exploration
+Description: Single-cell Multi-omics data portal visualization exploration. This is applied to explore our Multiome database CompassDB.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -15,21 +15,21 @@ Imports:
     biomaRt,
     cowplot,
     dplyr,
+    tidyr,
     GenomicRanges,
-    ggdendro,
     ggplot2,
     ggplotify,
-    ggpubr,
-    ggtree,
     Gviz,
     patchwork,
     RColorBrewer,
-    Seurat,
     jsonlite,
-    httr,
-    aplot
+    httr
 RoxygenNote: 7.3.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    Seurat,
+    ggdendro,
+    ggpubr,
+    ggtree
 VignetteBuilder: knitr
