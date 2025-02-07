@@ -18,16 +18,12 @@ knitr::opts_chunk$set(
 library(CompassR)
 library(Seurat)
 library(Signac)
+### Adjust the timeout to 10 minutes due to file size
+options(timeout=600)
 ```
-
-```{r}
-### quick run example
-# CompassR:::quick_example_compassr("CD79B")
-```
-
+Load the Seurat object and update the path to the fragments file online.
 ```{r}
 ### Sample level analysis
-options(timeout=600)
 obj = readRDS(url("https://g-297ec7.1d0d8d.03c0.data.globus.org/seurat_object/GSM5065525_GSM5065524.rds", "rb"))
 DefaultAssay(obj) = "ATAC"
 frag = Fragments(obj)[[1]]
@@ -35,6 +31,7 @@ frag = UpdatePath(frag, new.path = "https://g-297ec7.1d0d8d.03c0.data.globus.org
 obj@assays$ATAC@fragments[[1]] = frag
 ```
 
+Get the coverage plot for the gene of interest.
 ```{r}
 gene = "CD79B"
 p = CoveragePlot(
@@ -50,6 +47,7 @@ p = CoveragePlot(
 print(p)
 ```
 
+Extract the links for the gene of interest and plot the TF binding sites.
 ```{r}
 link_df_obj = Links(obj)
 gene_link = link_df_obj[link_df_obj$gene == "CD79B"]

@@ -18,11 +18,7 @@ knitr::opts_chunk$set(
 library(CompassR)
 ```
 
-```{r}
-### quick run example
-# CompassR:::quick_example_compassr("Myh6")
-```
-
+Load the data from CompassDB and extract the expression and linkage information for the Myh6.
 ```{r}
 ## Example for Myh6 in mouse heart sample
 expr_vec = query_exprssion("mm10", "Myh6")
@@ -43,23 +39,24 @@ colnames(expr_df) = c("Gene")
 expr_df$Sample = rownames(expr_df)
 ```
 
+Visuzalize the expression and linkage information for the Myh6 gene on samples of interest.
 ```{r}
 link_df$sample_id = link_df$sample
 genome_track_map(link_df, sample_df, "Myh6", expr_df, assembly = "mm10", legend.position="left", t = -20, b = 20)
 ```
 
+Extract the CREs linked to Myh6 expression in heart and plot the TF binding information.
 ```{r}
 track_plot = plot_genome_track(link_df, "Myh6", "mm10", sample_df$Sample)
 peaks = track_plot[[length(track_plot)]]
 peaks$name = as.character(peaks$name)
 peak_order = make_peak_group(link_df, peaks, sample_df)
 
-ht_peak_order = peak_order[peak_order[, 2] >= 0.5 & peak_order[, 1]<0.5 & peak_order[, 3]<0.5 & peak_order[, 4]<0.5, ]
+ht_peak_order = peak_order[peak_order[, "Heart"] >= 0.5 & peak_order[, "Gastrocnemius"]<0.5 & peak_order[, "Layer of hippocampus"]<0.5 & peak_order[, "Left cerebral cortex"]<0.5, ]
 ht_peaks = rownames(ht_peak_order)
 
 peak_vec = sub(":", "-", as.character(peaks))
 ht_peaks = peak_vec[as.numeric(ht_peaks)]
-
 
 tf = tf_binding("mm10", paste0(ht_peaks, collapse = "_"))
 plot_giggle(tf)

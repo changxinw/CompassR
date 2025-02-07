@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(CompassR)
 ```
 
-
+Load the in-house data, expression is a data frame with gene as rownames and sample as column names (by AverageExpression of Seurat), linkage is a data frame output from the Linkage of Signac package.
 ```{r}
 gene = "EMP2"
 tissue = "Pancreas"
@@ -27,6 +27,7 @@ lexpr_df = read.csv("http://compass-db.com/static/test_data/lung_expr_df.csv", h
 llink_df = read.csv("http://compass-db.com/static/test_data/lung_linkage_bed.csv", header = TRUE, row.names = 1)
 ```
 
+Query the expression and linkage data from the CompassDB.
 ```{r}
 expr_vec = query_exprssion("hg38", gene)
 link_res = query_linkage("hg38", gene)
@@ -44,7 +45,7 @@ colnames(expr_df) = c("Gene")
 expr_df$Sample = rownames(expr_df)
 ```
 
-
+Merge the in-house data with the CompassDB data.
 ```{r}
 colnames(llink_df) = colnames(link_df)
 link_df = rbind(link_df, llink_df)
@@ -55,26 +56,26 @@ expr_df = rbind(expr_df, data.frame(Gene = unlist(lexpr_df[gene, ]), Sample = co
 ```
 
 
-
+Visualize the linkage and expression information from both in-house data and CompassDB.
 ```{r}
 link_df$sample_id = link_df$sample
 genome_track_map(link_df, sample_df, gene, expr_df, assembly = "hg38", legend.position="left", t = -20, b = 20)
 ```
 
+Find the peaks that are highly correlated with the EMP2 expression in Lung tissue.
 ```{r}
 track_plot = plot_genome_track(link_df, gene, "hg38", sample_df$Sample)
 peaks = track_plot[[length(track_plot)]]
 peaks$name = as.character(peaks$name)
 peak_order = make_peak_group(link_df, peaks, sample_df)
 
-ht_peak_order = peak_order[peak_order[, 1] >0.5 & peak_order[, 2]<0.5, ]
+ht_peak_order = peak_order[peak_order[, "Lung"] >0.5 & peak_order[, "Pancreas"]<0.5, ]
 print(dim(ht_peak_order))
 ht_peaks = rownames(ht_peak_order)
 
+### TFBS analysis
 peak_vec = sub(":", "-", as.character(peaks))
 ht_peaks = peak_vec[as.numeric(ht_peaks)]
-
-
 tf = tf_binding("hg38", paste0(ht_peaks, collapse = "_"))
 p = plot_giggle(tf)
 p
