@@ -17,8 +17,10 @@ remotes::install_github("changxinw/CompassR")
 Here, we provide three examples for using CompassR from tissue level, celltype level, and single-sample level.
 
 1. **Tissue level:**
-Please go the the [tissue_example.Rmd](./vignettes/tissue_example.Rmd) for tissue-level example.
+Please go the the [Tissue example](https://changxinw.github.io/CompassR/articles/tissue_example.html) for tissue-level example.
 2. **Celltype level:**
-Please go the the [celltype_example.Rmd](./vignettes/celltype_example.Rmd) for celltype-level example.
+Please go the the [Celltype example](https://changxinw.github.io/CompassR/articles/celltype_example.html) for celltype-level example.
 3. **Sample level:**
-Please go the the [sample_example.Rmd](./vignettes/sample_example.Rmd) for sample-level example.
+Please go the the [Sample example](https://changxinw.github.io/CompassR/articles/sample_example.html) for sample-level example.
+4. **Integrate your inhosue data:**
+Learn how to integrat your inhouse data from [Integrate inhouse data](https://changxinw.github.io/CompassR/articles/integrat_inhouse_data.html)
