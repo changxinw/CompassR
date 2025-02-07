@@ -67,7 +67,8 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://changxinw.github.io/CompassR/">CompassR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co">### Load libraries</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://changxinw.github.io/CompassR/">CompassR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
@@ -134,28 +135,35 @@
 <span><span class="co">#&gt; Loading required package: GenomicRanges</span></span>
 <span><span class="co">#&gt; Loading required package: GenomeInfoDb</span></span>
 <span><span class="co">#&gt; Loading required package: grid</span></span></code></pre></div>
+<p>Here, we will explore the celltype specific analysis of the gene HEY2
+in cardiomyocytes of atrium and ventricle.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">### quick run example</span></span>
-<span><span class="co"># CompassR:::quick_example_compassr("HEY2")</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">### set up the gene and celltype</span></span>
+<span><span class="va">gene</span> <span class="op">=</span> <span class="st">"HEY2"</span></span>
+<span><span class="va">celltype</span> <span class="op">=</span> <span class="st">"Cardiomyocyte"</span></span></code></pre></div>
+<p>We will first query the expression and linkage data for the gene HEY2
+in cardiomyocytes from CompassDB.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gene</span> <span class="op">=</span> <span class="st">"HEY2"</span></span>
-<span><span class="va">celltype</span> <span class="op">=</span> <span class="st">"Cardiomyocyte"</span></span>
-<span><span class="va">expr_vec</span> <span class="op">=</span> <span class="fu"><a href="../reference/query_exprssion.html">query_exprssion</a></span><span class="op">(</span><span class="st">"hg38"</span>, <span class="va">gene</span>, celltype <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">expr_vec</span> <span class="op">=</span> <span class="fu"><a href="../reference/query_exprssion.html">query_exprssion</a></span><span class="op">(</span><span class="st">"hg38"</span>, <span class="va">gene</span>, celltype <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">link_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/query_linkage.html">query_linkage</a></span><span class="op">(</span><span class="st">"hg38"</span>, <span class="va">gene</span>, celltype <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">link_df</span> <span class="op">=</span> <span class="va">link_res</span><span class="op">[[</span><span class="st">"linkage"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">sample_df</span> <span class="op">=</span> <span class="va">link_res</span><span class="op">[[</span><span class="st">"samples"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
+<span><span class="co">### filter the table, extract features use for plotting</span></span>
 <span><span class="va">sample_df</span> <span class="op">=</span> <span class="va">sample_df</span><span class="op">[</span><span class="va">sample_df</span><span class="op">$</span><span class="va">bio_source</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Heart right ventricle"</span>, <span class="st">"Left cardiac atrium"</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="va">sample_df</span> <span class="op">=</span> <span class="va">sample_df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sample_id"</span>, <span class="st">"bio_source"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sample_df</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="st">"Group"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co">### prepare linkage data</span></span>
 <span><span class="va">link_df</span> <span class="op">=</span> <span class="va">link_df</span><span class="op">[</span><span class="va">link_df</span><span class="op">$</span><span class="va">sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">sample_df</span><span class="op">$</span><span class="va">Sample</span> <span class="op">&amp;</span> <span class="va">link_df</span><span class="op">$</span><span class="va">celltype</span> <span class="op">==</span> <span class="va">celltype</span>, <span class="op">]</span></span>
 <span><span class="co"># link_df[, c("sample", "gene", "peak", "zscore", "source", "celltype")]</span></span>
 <span></span>
+<span><span class="co">### prepare sample information</span></span>
 <span><span class="va">sample_df</span> <span class="op">=</span> <span class="va">sample_df</span><span class="op">[</span><span class="va">sample_df</span><span class="op">$</span><span class="va">Sample</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">link_df</span><span class="op">$</span><span class="va">sample</span>, <span class="op">]</span></span>
 <span><span class="va">sample_df</span> <span class="op">=</span> <span class="va">sample_df</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sample_df</span><span class="op">$</span><span class="va">Group</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
+<span><span class="co">### prepare gene expression</span></span>
 <span><span class="va">expr_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">expr_vec</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sample_df</span><span class="op">$</span><span class="va">Sample</span>, <span class="st">"."</span>, <span class="va">sample_df</span><span class="op">$</span><span class="va">Sample</span>, <span class="st">".RNA."</span>, <span class="va">celltype</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">expr_df</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gene"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">expr_df</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">expr_df</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"\\."</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">}</span><span class="op">)</span></span>
@@ -164,6 +172,8 @@
 <span><span class="va">link_df</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">=</span> <span class="va">link_df</span><span class="op">$</span><span class="va">sample</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">link_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 29</span></span></code></pre></div>
+<p>We will then plot the expression of the gene in the samples and the
+linkage data.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scheme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Gviz/man/settings.html" class="external-link">getScheme</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">scheme</span><span class="op">$</span><span class="va">GdObject</span><span class="op">$</span><span class="va">cex.axis</span> <span class="op">=</span> <span class="fl">1</span></span>
@@ -179,6 +189,8 @@
 <p><img src="celltype_example_files/figure-html/unnamed-chunk-4-1.png" width="700"><img src="celltype_example_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dev.off()</span></span></code></pre></div>
+<p>TFBS analysis is performed on the CREs linked to the gene HEY2 in the
+cardiomyocytes.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### TFBS Analysis</span></span>
 <span><span class="va">track_plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_genome_track.html">plot_genome_track</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="st">"HEY2"</span>, <span class="st">"hg38"</span>, <span class="va">sample_df</span><span class="op">$</span><span class="va">Sample</span><span class="op">)</span></span></code></pre></div>
@@ -188,17 +200,19 @@
 <span><span class="va">peaks</span><span class="op">$</span><span class="va">name</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">peaks</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="va">peak_order</span> <span class="op">=</span> <span class="fu"><a href="../reference/make_peak_group.html">make_peak_group</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="va">peaks</span>, <span class="va">sample_df</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ht_peak_order</span> <span class="op">=</span> <span class="va">peak_order</span><span class="op">[</span><span class="va">peak_order</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="fl">0.5</span> <span class="op">&amp;</span> <span class="va">peak_order</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span><span class="op">&lt;</span><span class="fl">0.5</span>, <span class="op">]</span></span>
+<span><span class="co">### Find CREs linked to HEY2 in ventricle but not in atrium</span></span>
+<span><span class="va">ht_peak_order</span> <span class="op">=</span> <span class="va">peak_order</span><span class="op">[</span><span class="va">peak_order</span><span class="op">[</span>, <span class="st">"Ventricle"</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="fl">0.5</span> <span class="op">&amp;</span> <span class="va">peak_order</span><span class="op">[</span>, <span class="st">"Atrium"</span><span class="op">]</span><span class="op">&lt;</span><span class="fl">0.5</span>, <span class="op">]</span></span>
 <span><span class="va">ht_peaks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">ht_peak_order</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">peak_vec</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">peaks</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ht_peaks</span> <span class="op">=</span> <span class="va">peak_vec</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">ht_peaks</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">tf</span> <span class="op">=</span> <span class="fu"><a href="../reference/tf_binding.html">tf_binding</a></span><span class="op">(</span><span class="st">"hg38"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ht_peaks</span>, collapse <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span><span class="op">)</span></span>
-<span> <span class="fu"><a href="../reference/plot_giggle.html">plot_giggle</a></span><span class="op">(</span><span class="va">tf</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_giggle.html">plot_giggle</a></span><span class="op">(</span><span class="va">tf</span><span class="op">)</span></span></code></pre></div>
 <p><img src="celltype_example_files/figure-html/unnamed-chunk-5-2.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ggsave("Barplot_HEY2_Ventricle_specific_TFs.pdf", p, width = 5, height = 5)</span></span></code></pre></div>
+<p>TFBS analysis results can also be visualized as a wordcloud.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lepennec/ggwordcloud" class="external-link">ggwordcloud</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: ggplot2</span></span>
