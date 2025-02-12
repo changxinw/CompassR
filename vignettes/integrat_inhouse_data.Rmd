@@ -58,6 +58,7 @@ expr_df = rbind(expr_df, data.frame(Gene = unlist(lexpr_df[gene, ]), Sample = co
 
 Visualize the linkage and expression information from both in-house data and CompassDB.
 ```{r}
+### This can fail when ensemble server is down, if that is the case, please try it later
 link_df$sample_id = link_df$sample
 genome_track_map(link_df, sample_df, gene, expr_df, assembly = "hg38", legend.position="left", t = -20, b = 20)
 ```

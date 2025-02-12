@@ -41,6 +41,7 @@ expr_df$Sample = rownames(expr_df)
 
 Visuzalize the expression and linkage information for the Myh6 gene on samples of interest.
 ```{r}
+### This can fail when ensemble server is down, if that is the case, please try it later
 link_df$sample_id = link_df$sample
 genome_track_map(link_df, sample_df, "Myh6", expr_df, assembly = "mm10", legend.position="left", t = -20, b = 20)
 ```

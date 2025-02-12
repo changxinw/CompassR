@@ -69,6 +69,7 @@ options(Gviz.scheme="myScheme")
 
 sample_df$Group = c(rep("Ventricle", 2), rep("Atrium", 2))
 # pdf("Heatmap_celltype_cadiomyocytes_HEY2.pdf", width = 10, height = 6)
+### This can fail when ensemble server is down, if that is the case, please try it later
 genome_track_map(link_df, sample_df, gene, expr_df, assembly = "hg38", legend.position="left", t = -30, b = 30)
 # dev.off()
 ```
