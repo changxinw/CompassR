@@ -104,7 +104,8 @@ linkage is a data frame output from the Linkage of Signac package.</p>
 <p>Visualize the linkage and expression information from both in-house
 data and CompassDB.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">link_df</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">=</span> <span class="va">link_df</span><span class="op">$</span><span class="va">sample</span></span>
+<code class="sourceCode R"><span><span class="co">### This can fail when ensemble server is down, if that is the case, please try it later</span></span>
+<span><span class="va">link_df</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">=</span> <span class="va">link_df</span><span class="op">$</span><span class="va">sample</span></span>
 <span><span class="fu"><a href="../reference/genome_track_map.html">genome_track_map</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="va">sample_df</span>, <span class="va">gene</span>, <span class="va">expr_df</span>, assembly <span class="op">=</span> <span class="st">"hg38"</span>, legend.position<span class="op">=</span><span class="st">"left"</span>, t <span class="op">=</span> <span class="op">-</span><span class="fl">20</span>, b <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt; the plot was flipped and the y limits will be applied to x-axis</span></span>
 <span><span class="co">#&gt; Warning in get_plot_component(plot, "guide-box"): Multiple components found;</span></span>
