@@ -1,5 +1,5 @@
 ---
-title: "celltype_example"
+title: "HEY2 Regulation in Cardiomyocytes"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{celltype_example}

@@ -1,7 +1,7 @@
 Package: CompassR
 Type: Package
 Title: CompassR
-Version: 0.1.0
+Version: 1.0.0
 Author: Changxin Wan
 Maintainer: Changxin Wan <changxin.wan@duke.edu>
 Description: Single-cell Multi-omics data portal visualization exploration. This is applied to explore our Multiome database CompassDB.

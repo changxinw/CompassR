@@ -1,5 +1,5 @@
 ---
-title: "tissue_example"
+title: "Myh6 Regulation in Heart"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{tissue_example}

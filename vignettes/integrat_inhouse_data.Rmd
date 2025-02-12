@@ -1,5 +1,5 @@
 ---
-title: "integrat_inhouse_data"
+title: "Integrating In-house Data with Datasets in CompassDB"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{integrat_inhouse_data}
