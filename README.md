@@ -9,9 +9,7 @@ Installation of dependent:
 
 ``` r
 # List of additional packages to install
-cran_pkgs <- c("aplot", "biomaRt", "cowplot", "dplyr", "tidyr", 
-                    "GenomicRanges", "ggplot2", "ggplotify", "Gviz", 
-                    "patchwork", "RColorBrewer", "jsonlite", "httr")
+cran_pkgs <- c("aplot", "cowplot", "dplyr", "tidyr", "ggplot2", "ggplotify", "patchwork", "RColorBrewer", "jsonlite", "httr")
 
 # Install missing packages
 sapply(cran_pkgs, function(pkg) {
