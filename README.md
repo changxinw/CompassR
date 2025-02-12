@@ -5,7 +5,7 @@ We developed CompassR to support more in-depth analyses and visualizations of CR
 
 ## Installation
 
-Installation of dependent:
+Installation of required packages:
 
 ``` r
 # List of additional packages to install
@@ -23,6 +23,19 @@ bioc_pkgs <- c("biomaRt", "GenomicRanges", "Gviz")
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install(bioc_pkgs, update = TRUE, ask = FALSE)
+```
+
+Installation of suggested packages (optional):
+``` r
+# List of additional packages to install
+cran_pkgs <- c("Seurat", "Signac", "ggwordcloud")
+
+# Install missing packages
+sapply(cran_pkgs, function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+  }
+})
 ```
 
 To install the latest release of CompassR from GitHub:

@@ -30,9 +30,6 @@ Suggests:
     rmarkdown,
     Seurat,
     Signac,
-    ggdendro,
-    ggpubr,
-    ggtree,
     ggwordcloud
 VignetteBuilder: knitr
 URL: https://changxinw.github.io/CompassR/
