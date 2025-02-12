@@ -34,7 +34,7 @@ remotes::install_github("changxinw/CompassR")
 ```
 
 ## Tutorial
-Here, we provide three examples for using CompassR from tissue level, celltype level, and single-sample level.
+In our [vignettes](https://changxinw.github.io/CompassR/), we provide three examples for using CompassR from tissue level, celltype level, and single-sample level.
 
 1. **Tissue level:**
 Please go the the [Myh6 Regulation in Heart](https://changxinw.github.io/CompassR/articles/tissue_example.html) for tissue-level example.
