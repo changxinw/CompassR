@@ -1,5 +1,5 @@
 ---
-title: "CD79B Regulation in B cells"
+title: "Analysis in a single sample"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{sample_example}
@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+We explored the regulation of the CD79B gene in a single peripheral blood mononuclear cell (PBMC) sample. CD79B is crucial for forming the B-cell receptor complex and is expressed almost exclusively on B cells.
 
 ```{r setup}
 library(CompassR)

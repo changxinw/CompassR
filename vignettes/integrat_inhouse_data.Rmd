@@ -1,5 +1,5 @@
 ---
-title: "Integrating In-house Data with Datasets in CompassDB"
+title: "Integrating in-house data with datasets in CompassDB"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{integrat_inhouse_data}
@@ -14,8 +14,27 @@ knitr::opts_chunk$set(
 )
 ```
 
+Here, we use the differential regulation of EMP2 between lung and pancreas as an example. All we need from user is the sample / cell type average expression and CRE-gene linkage from Seurat object.
+
 ```{r setup}
 library(CompassR)
+```
+
+In order to get the average expression and linkage data frame from your Seurat object, you may find the code useful below.
+```{r}
+# obj_list # A list of seurat objects as obj_list, with assay name as RNA and ATAC, with names as sample ids
+# lexpr_list = lapply(obj_list, function(obj){
+#   AverageExpression(obj, group.by = "orig.ident")$RNA[, 1]
+#   }) # list for sample expression
+# lexpr_df = do.call("cbind", lexpr_list)
+# colnames(lexpr_df) = names(obj_list)
+# llink_list = lapply(names(obj_list), function(i){
+#   obj = obj_list[[i]]
+#   DefaultAssay(obj) = "ATAC"
+#   link_df = as.data.frame(Links(obj))
+#   link_df$sample = i
+# }) # list for sample linkage
+# llink_df = do.call("rbind", llink_list)
 ```
 
 Load the in-house data, expression is a data frame with gene as rownames and sample as column names (by AverageExpression of Seurat), linkage is a data frame output from the Linkage of Signac package.

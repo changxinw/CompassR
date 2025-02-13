@@ -1,5 +1,5 @@
 ---
-title: "HEY2 Regulation in Cardiomyocytes"
+title: "Analysis across multiple cell types"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{celltype_example}
@@ -13,6 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+We compared the gene regulation of the HEY2 gene in cardiomyocytes between human atrium and ventricle tissues. Cardiomyocytes are the muscle cells in the heart responsible for contracting and pumping blood. The atrium and ventricles contain cardiomyocytes with different functionalities and characteristics. HEY2 plays a crucial role in regulating the size of the cardiac progenitor pool, the development of the right ventricle, and the overall morphogenesis of the heart. It has higher expression in ventricle cardiomyocytes. For each sample, CompassR visualizes HEY2 gene expression levels in cardiomyocytes and HEY2-linked CREs found in cardiomyocytes that are significantly associated with HEY2 gene expression.
+
 
 ```{r setup}
 ### Load libraries

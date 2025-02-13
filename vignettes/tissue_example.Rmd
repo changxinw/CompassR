@@ -1,5 +1,5 @@
 ---
-title: "Myh6 Regulation in Heart"
+title: "Analysis across multiple samples"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{tissue_example}
@@ -13,6 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+Example of CompassR analysis of the mouse Myh6 gene, which has important functions in cardiac
+muscle contraction and adult heart development. We selected a group of samples from different mouse tissues, including gastrocnemius, heart, hippocampus, and cerebral cortex, for visualization. For each sample, CompassR visualizes the expression of Myh6 gene and the genomic locations of Myh6-linked CREs whose chromatin accessibility is significantly associated with the gene expression of Myh6. CompassR also visualizes the genomic locations of the Myh6 gene and a union set of Myh6-linked CREs across all samples.
 
 ```{r setup}
 library(CompassR)
