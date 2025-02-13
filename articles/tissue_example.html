@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Myh6 Regulation in Heart • CompassR</title>
+<title>Analysis across multiple samples • CompassR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Myh6 Regulation in Heart">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analysis across multiple samples">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,10 +33,10 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/celltype_example.html">HEY2 Regulation in Cardiomyocytes</a></li>
-    <li><a class="dropdown-item" href="../articles/integrat_inhouse_data.html">Integrating In-house Data with Datasets in CompassDB</a></li>
-    <li><a class="dropdown-item" href="../articles/sample_example.html">CD79B Regulation in B cells</a></li>
-    <li><a class="dropdown-item" href="../articles/tissue_example.html">Myh6 Regulation in Heart</a></li>
+<li><a class="dropdown-item" href="../articles/celltype_example.html">Analysis across multiple cell types</a></li>
+    <li><a class="dropdown-item" href="../articles/integrat_inhouse_data.html">Integrating in-house data with datasets in CompassDB</a></li>
+    <li><a class="dropdown-item" href="../articles/sample_example.html">Analysis in a single sample</a></li>
+    <li><a class="dropdown-item" href="../articles/tissue_example.html">Analysis across multiple samples</a></li>
   </ul>
 </li>
       </ul>
@@ -57,7 +57,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Myh6 Regulation in Heart</h1>
+      <h1>Analysis across multiple samples</h1>
             
       
 
@@ -66,6 +66,16 @@
 
     
     
+<p>Example of CompassR analysis of the mouse Myh6 gene, which has
+important functions in cardiac muscle contraction and adult heart
+development. We selected a group of samples from different mouse
+tissues, including gastrocnemius, heart, hippocampus, and cerebral
+cortex, for visualization. For each sample, CompassR visualizes the
+expression of Myh6 gene and the genomic locations of Myh6-linked CREs
+whose chromatin accessibility is significantly associated with the gene
+expression of Myh6. CompassR also visualizes the genomic locations of
+the Myh6 gene and a union set of Myh6-linked CREs across all
+samples.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://changxinw.github.io/CompassR/">CompassR</a></span><span class="op">)</span></span></code></pre></div>
 <p>Load the data from CompassDB and extract the expression and linkage

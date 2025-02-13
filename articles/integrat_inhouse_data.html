@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Integrating In-house Data with Datasets in CompassDB • CompassR</title>
+<title>Integrating in-house data with datasets in CompassDB • CompassR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Integrating In-house Data with Datasets in CompassDB">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Integrating in-house data with datasets in CompassDB">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,10 +33,10 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/celltype_example.html">HEY2 Regulation in Cardiomyocytes</a></li>
-    <li><a class="dropdown-item" href="../articles/integrat_inhouse_data.html">Integrating In-house Data with Datasets in CompassDB</a></li>
-    <li><a class="dropdown-item" href="../articles/sample_example.html">CD79B Regulation in B cells</a></li>
-    <li><a class="dropdown-item" href="../articles/tissue_example.html">Myh6 Regulation in Heart</a></li>
+<li><a class="dropdown-item" href="../articles/celltype_example.html">Analysis across multiple cell types</a></li>
+    <li><a class="dropdown-item" href="../articles/integrat_inhouse_data.html">Integrating in-house data with datasets in CompassDB</a></li>
+    <li><a class="dropdown-item" href="../articles/sample_example.html">Analysis in a single sample</a></li>
+    <li><a class="dropdown-item" href="../articles/tissue_example.html">Analysis across multiple samples</a></li>
   </ul>
 </li>
       </ul>
@@ -57,7 +57,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Integrating In-house Data with Datasets in CompassDB</h1>
+      <h1>Integrating in-house data with datasets in CompassDB</h1>
             
       
 
@@ -66,19 +66,38 @@
 
     
     
+<p>Here, we use the differential regulation of EMP2 between lung and
+pancreas as an example. All we need from user is the sample / cell type
+average expression and CRE-gene linkage from Seurat object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://changxinw.github.io/CompassR/">CompassR</a></span><span class="op">)</span></span></code></pre></div>
+<p>In order to get the average expression and linkage data frame from
+your Seurat object, you may find the code useful below.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># obj_list # A list of seurat objects as obj_list, with assay name as RNA and ATAC, with names as sample ids</span></span>
+<span><span class="co"># lexpr_list = lapply(obj_list, function(obj){</span></span>
+<span><span class="co">#   AverageExpression(obj, group.by = "orig.ident")$RNA[, 1]</span></span>
+<span><span class="co">#   }) # list for sample expression</span></span>
+<span><span class="co"># lexpr_df = do.call("cbind", lexpr_list)</span></span>
+<span><span class="co"># colnames(lexpr_df) = names(obj_list)</span></span>
+<span><span class="co"># llink_list = lapply(names(obj_list), function(i){</span></span>
+<span><span class="co">#   obj = obj_list[[i]]</span></span>
+<span><span class="co">#   DefaultAssay(obj) = "ATAC"</span></span>
+<span><span class="co">#   link_df = as.data.frame(Links(obj))</span></span>
+<span><span class="co">#   link_df$sample = i</span></span>
+<span><span class="co"># }) # list for sample linkage</span></span>
+<span><span class="co"># llink_df = do.call("rbind", llink_list)</span></span></code></pre></div>
 <p>Load the in-house data, expression is a data frame with gene as
 rownames and sample as column names (by AverageExpression of Seurat),
 linkage is a data frame output from the Linkage of Signac package.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene</span> <span class="op">=</span> <span class="st">"EMP2"</span></span>
 <span><span class="va">tissue</span> <span class="op">=</span> <span class="st">"Pancreas"</span></span>
 <span></span>
 <span><span class="va">lexpr_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"http://compass-db.com/static/test_data/lung_expr_df.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">llink_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"http://compass-db.com/static/test_data/lung_linkage_bed.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>Query the expression and linkage data from the CompassDB.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr_vec</span> <span class="op">=</span> <span class="fu"><a href="../reference/query_exprssion.html">query_exprssion</a></span><span class="op">(</span><span class="st">"hg38"</span>, <span class="va">gene</span><span class="op">)</span></span>
 <span><span class="va">link_res</span> <span class="op">=</span> <span class="fu"><a href="../reference/query_linkage.html">query_linkage</a></span><span class="op">(</span><span class="st">"hg38"</span>, <span class="va">gene</span><span class="op">)</span></span>
 <span></span>
@@ -94,7 +113,7 @@ linkage is a data frame output from the Linkage of Signac package.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">expr_df</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gene"</span><span class="op">)</span></span>
 <span><span class="va">expr_df</span><span class="op">$</span><span class="va">Sample</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">expr_df</span><span class="op">)</span></span></code></pre></div>
 <p>Merge the in-house data with the CompassDB data.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">llink_df</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">link_df</span><span class="op">)</span></span>
 <span><span class="va">link_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="va">llink_df</span><span class="op">)</span></span>
 <span><span class="va">link_df</span> <span class="op">=</span> <span class="va">link_df</span><span class="op">[</span><span class="va">link_df</span><span class="op">$</span><span class="va">gene</span> <span class="op">==</span> <span class="va">gene</span>, <span class="op">]</span></span>
@@ -103,20 +122,20 @@ linkage is a data frame output from the Linkage of Signac package.</p>
 <span><span class="va">expr_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">expr_df</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">lexpr_df</span><span class="op">[</span><span class="va">gene</span>, <span class="op">]</span><span class="op">)</span>, Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">lexpr_df</span><span class="op">)</span>, row.names <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">lexpr_df</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the linkage and expression information from both in-house
 data and CompassDB.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### This can fail when ensemble server is down, if that is the case, please try it later</span></span>
 <span><span class="va">link_df</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">=</span> <span class="va">link_df</span><span class="op">$</span><span class="va">sample</span></span>
 <span><span class="fu"><a href="../reference/genome_track_map.html">genome_track_map</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="va">sample_df</span>, <span class="va">gene</span>, <span class="va">expr_df</span>, assembly <span class="op">=</span> <span class="st">"hg38"</span>, legend.position<span class="op">=</span><span class="st">"left"</span>, t <span class="op">=</span> <span class="op">-</span><span class="fl">20</span>, b <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt; the plot was flipped and the y limits will be applied to x-axis</span></span>
 <span><span class="co">#&gt; Warning in get_plot_component(plot, "guide-box"): Multiple components found;</span></span>
 <span><span class="co">#&gt; returning the first one. To return all, use `return_all = TRUE`.</span></span></code></pre></div>
-<p><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-5-1.png" width="700"><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-5-2.png" width="700"></p>
+<p><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-6-1.png" width="700"><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-6-2.png" width="700"></p>
 <p>Find the peaks that are highly correlated with the EMP2 expression in
 Lung tissue.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">track_plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_genome_track.html">plot_genome_track</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="va">gene</span>, <span class="st">"hg38"</span>, <span class="va">sample_df</span><span class="op">$</span><span class="va">Sample</span><span class="op">)</span></span></code></pre></div>
-<p><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">track_plot</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_genome_track.html">plot_genome_track</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="va">gene</span>, <span class="st">"hg38"</span>, <span class="va">sample_df</span><span class="op">$</span><span class="va">Sample</span><span class="op">)</span></span></code></pre></div>
+<p><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">peaks</span> <span class="op">=</span> <span class="va">track_plot</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">track_plot</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">peaks</span><span class="op">$</span><span class="va">name</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">peaks</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="va">peak_order</span> <span class="op">=</span> <span class="fu"><a href="../reference/make_peak_group.html">make_peak_group</a></span><span class="op">(</span><span class="va">link_df</span>, <span class="va">peaks</span>, <span class="va">sample_df</span><span class="op">)</span></span>
@@ -132,7 +151,7 @@ Lung tissue.</p>
 <span><span class="va">tf</span> <span class="op">=</span> <span class="fu"><a href="../reference/tf_binding.html">tf_binding</a></span><span class="op">(</span><span class="st">"hg38"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">ht_peaks</span>, collapse <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_giggle.html">plot_giggle</a></span><span class="op">(</span><span class="va">tf</span><span class="op">)</span></span>
 <span><span class="va">p</span></span></code></pre></div>
-<p><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-6-2.png" width="700"></p>
+<p><img src="integrat_inhouse_data_files/figure-html/unnamed-chunk-7-2.png" width="700"></p>
   </main>
 </div>
 
