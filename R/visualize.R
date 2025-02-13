@@ -7,6 +7,7 @@
 #' @param min_x setting the minimum range
 #' @param max_x setting the maximum range
 #' @param bm_host biomart host site
+#' @param bm_mirror biomart host mirror site
 #'
 #' @return list of plots for genome track
 #' @importFrom biomaRt useEnsembl
@@ -23,7 +24,8 @@ plot_genome_track <- function(df,
                               sample_ids,
                               min_x = NULL,
                               max_x = NULL,
-                              bm_host = "https://nov2020.archive.ensembl.org"){
+                              bm_host = "https://nov2020.archive.ensembl.org",
+                              bm_mirror = "useast"){
   if (assembly == "mm10"){
     bm <- useEnsembl(host = bm_host,
                      biomart = "ENSEMBL_MART_ENSEMBL",
@@ -40,7 +42,7 @@ plot_genome_track <- function(df,
   } else if (assembly == "hg38"){
     bm <- useEnsembl(host = bm_host,
                      biomart = "ENSEMBL_MART_ENSEMBL",
-                     dataset = "hsapiens_gene_ensembl") #hsapiens_gene_ensembl
+                     dataset = "hsapiens_gene_ensembl", mirror = bm_mirror) #hsapiens_gene_ensembl
     grtrack <- BiomartGeneRegionTrack(genome = "hg38",
                                       name = "Gene",
                                       symbol = gene,
