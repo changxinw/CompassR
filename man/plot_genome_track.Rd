@@ -11,7 +11,8 @@ plot_genome_track(
   sample_ids,
   min_x = NULL,
   max_x = NULL,
-  bm_host = "https://nov2020.archive.ensembl.org"
+  bm_host = "https://nov2020.archive.ensembl.org",
+  bm_mirror = "useast"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ plot_genome_track(
 \item{max_x}{setting the maximum range}
 
 \item{bm_host}{biomart host site}
+
+\item{bm_mirror}{biomart useat, asia, www}
 }
 \value{
 list of plots for genome track

@@ -11,6 +11,7 @@ genome_track_map(
   expr_df,
   output_file = "./test.pdf",
   assembly = "hg38",
+  bm_mirror = "useast",
   width = 12,
   height = 6,
   ...
@@ -27,7 +28,7 @@ genome_track_map(
 
 \item{output_file}{output plot file name}
 
-\item{assembly}{hg38 or mm10}
+\item{assembly}{bm_mirror useast, asia, www}
 
 \item{width}{plot width}
 

@@ -7,7 +7,7 @@
 #' @param min_x setting the minimum range
 #' @param max_x setting the maximum range
 #' @param bm_host biomart host site
-#' @param bm_mirror biomart host mirror site
+#' @param bm_mirror biomart useat, asia, www
 #'
 #' @return list of plots for genome track
 #' @importFrom biomaRt useEnsembl
@@ -228,6 +228,7 @@ combind_plots = function(track_plot,
 #' @param expr_df list of gene expression information
 #' @param output_file output plot file name
 #' @param assembly hg38 or mm10
+#' @param assembly bm_mirror useast, asia, www
 #' @param width plot width
 #' @param height plot height
 #' @param ... additional parameters passed to plots combind_plots
@@ -244,6 +245,7 @@ genome_track_map = function(link_df,
                             expr_df,
                             output_file = "./test.pdf",
                             assembly = "hg38",
+                            bm_mirror = "useast",
                             width = 12,
                             height = 6,
                             ...){
@@ -254,7 +256,7 @@ genome_track_map = function(link_df,
   ### plot
   annot_plot = plot_annotation_bar(group_df)
   expr_plot = plot_expr_barplot(expr_df, annot_plot, gene)
-  track_plot = plot_genome_track(link_gene_df, gene, assembly, group_df$Sample)
+  track_plot = plot_genome_track(link_gene_df, gene, assembly, group_df$Sample, bm_mirror = bm_mirror)
   p_track = as.ggplot(~Gviz::plotTracks(track_plot[[1]], from = track_plot[[3]], to = track_plot[[4]]), envir=environment())
   pdf(output_file, width = width, height = height)
   p = combind_plots(p_track, annot_plot, expr_plot, track_plot[[2]], ...)
