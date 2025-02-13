@@ -12,7 +12,7 @@ plot_genome_track(
   min_x = NULL,
   max_x = NULL,
   bm_host = "https://nov2020.archive.ensembl.org",
-  bm_mirror = "useast"
+  bm_mirror = NULL
 )
 }
 \arguments{

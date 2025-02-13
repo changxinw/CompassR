@@ -11,7 +11,7 @@ genome_track_map(
   expr_df,
   output_file = "./test.pdf",
   assembly = "hg38",
-  bm_mirror = "useast",
+  bm_mirror = NULL,
   width = 12,
   height = 6,
   ...

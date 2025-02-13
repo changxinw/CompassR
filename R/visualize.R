@@ -25,7 +25,7 @@ plot_genome_track <- function(df,
                               min_x = NULL,
                               max_x = NULL,
                               bm_host = "https://nov2020.archive.ensembl.org",
-                              bm_mirror = "useast"){
+                              bm_mirror = NULL){
   if (assembly == "mm10"){
     bm <- useEnsembl(host = bm_host,
                      biomart = "ENSEMBL_MART_ENSEMBL",
@@ -245,7 +245,7 @@ genome_track_map = function(link_df,
                             expr_df,
                             output_file = "./test.pdf",
                             assembly = "hg38",
-                            bm_mirror = "useast",
+                            bm_mirror = NULL,
                             width = 12,
                             height = 6,
                             ...){
