@@ -1,5 +1,5 @@
 ---
-title: "Analysis in a single sample"
+title: "Analyze a single sample"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{sample_example}

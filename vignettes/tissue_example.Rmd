@@ -1,5 +1,5 @@
 ---
-title: "Analysis across multiple samples"
+title: "Analyze multiple samples"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{tissue_example}

@@ -1,5 +1,5 @@
 ---
-title: "Analysis across multiple cell types"
+title: "Analyze a single cell type across multiple samples"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{celltype_example}
